@@ -9,6 +9,9 @@
     @else
         <script src="https://cdn.tailwindcss.com"></script>
     @endif
+    @php
+        use SimpleSoftwareIO\QrCode\Facades\QrCode;
+    @endphp
 </head>
 <body class="bg-gray-50 font-sans antialiased">
     <div class="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
@@ -60,14 +63,28 @@
                         <h3 class="text-lg font-medium text-gray-900 mb-4">QR Code Verifikasi</h3>
                         <div class="flex flex-col items-center">
                             <div class="bg-white p-6 rounded-lg shadow-lg border-2 border-gray-200">
+                                @php
+                                    $verifyUrl = route('signatures.verify', $document->qr_code_token);
+                                @endphp
                                 @if($document->qr_code_path && Storage::disk('public')->exists($document->qr_code_path))
                                     <img src="{{ Storage::disk('public')->url($document->qr_code_path) }}" 
                                          alt="QR Code Verifikasi" 
                                          class="w-64 h-64 mx-auto"
-                                         style="max-width: 256px; height: auto;">
+                                         style="max-width: 256px; height: auto;"
+                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                    <div class="w-64 h-64 mx-auto items-center justify-center bg-gray-100 rounded" style="display: none;">
+                                        <div class="text-center p-4">
+                                            <p class="text-sm text-gray-500 mb-2">QR Code sedang dimuat...</p>
+                                            <div class="inline-block">
+                                                {!! QrCode::size(256)->margin(1)->errorCorrection('H')->generate($verifyUrl) !!}
+                                            </div>
+                                        </div>
+                                    </div>
                                 @else
-                                    <div class="w-64 h-64 mx-auto flex items-center justify-center bg-gray-100 rounded">
-                                        <p class="text-sm text-gray-500">QR Code tidak tersedia</p>
+                                    <div class="w-64 h-64 mx-auto flex items-center justify-center">
+                                        <div class="text-center">
+                                            {!! QrCode::size(256)->margin(1)->errorCorrection('H')->generate($verifyUrl) !!}
+                                        </div>
                                     </div>
                                 @endif
                             </div>

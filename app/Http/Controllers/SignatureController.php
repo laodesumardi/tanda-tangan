@@ -6,6 +6,7 @@ use App\Models\Document;
 use App\Models\Signature;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class SignatureController extends Controller
 {
@@ -71,6 +72,25 @@ class SignatureController extends Controller
     public function verify($token)
     {
         $document = Document::where('qr_code_token', $token)->with('signatures')->firstOrFail();
+        
+        // Generate QR Code jika belum ada
+        if (!$document->qr_code_path || !Storage::disk('public')->exists($document->qr_code_path)) {
+            $qrCodeUrl = route('signatures.verify', $token);
+            $qrCodePath = 'qrcodes/' . $document->qr_code_token . '.svg';
+            
+            // Generate QR Code
+            $qrCodeSvg = QrCode::format('svg')
+                ->size(300)
+                ->margin(1)
+                ->errorCorrection('H')
+                ->generate($qrCodeUrl);
+            
+            Storage::disk('public')->put($qrCodePath, $qrCodeSvg);
+            
+            // Update document dengan path QR Code
+            $document->update(['qr_code_path' => $qrCodePath]);
+        }
+        
         return view('signatures.verify', compact('document'));
     }
 

@@ -9,7 +9,6 @@
     @else
         <script src="https://cdn.tailwindcss.com"></script>
     @endif
-    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
 </head>
 <body class="bg-gray-50 font-sans antialiased">
     <div class="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
@@ -56,43 +55,34 @@
                         </div>
                     </dl>
 
-                    <!-- QR Code dan Barcode Section -->
+                    <!-- QR Code Section -->
                     <div class="border-t border-gray-200 pt-6 mb-6">
-                        <h3 class="text-lg font-medium text-gray-900 mb-4">Kode Verifikasi</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <!-- QR Code -->
-                            <div class="bg-gray-50 rounded-lg p-4 text-center">
-                                <h4 class="text-sm font-medium text-gray-700 mb-3">QR Code</h4>
-                                <div class="inline-block bg-white p-3 rounded-lg shadow-sm">
-                                    @if($document->qr_code_path && Storage::disk('public')->exists($document->qr_code_path))
-                                        <img src="{{ Storage::disk('public')->url($document->qr_code_path) }}" 
-                                             alt="QR Code" 
-                                             class="w-48 h-48 mx-auto"
-                                             style="max-width: 192px; height: auto;">
-                                    @else
-                                        <div class="w-48 h-48 mx-auto flex items-center justify-center bg-gray-100 rounded">
-                                            <p class="text-xs text-gray-500">QR Code tidak tersedia</p>
-                                        </div>
-                                    @endif
-                                </div>
-                                <p class="text-xs text-gray-500 mt-2">Scan untuk verifikasi dokumen</p>
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">QR Code Verifikasi</h3>
+                        <div class="flex flex-col items-center">
+                            <div class="bg-white p-6 rounded-lg shadow-lg border-2 border-gray-200">
+                                @if($document->qr_code_path && Storage::disk('public')->exists($document->qr_code_path))
+                                    <img src="{{ Storage::disk('public')->url($document->qr_code_path) }}" 
+                                         alt="QR Code Verifikasi" 
+                                         class="w-64 h-64 mx-auto"
+                                         style="max-width: 256px; height: auto;">
+                                @else
+                                    <div class="w-64 h-64 mx-auto flex items-center justify-center bg-gray-100 rounded">
+                                        <p class="text-sm text-gray-500">QR Code tidak tersedia</p>
+                                    </div>
+                                @endif
                             </div>
-
-                            <!-- Barcode -->
-                            <div class="bg-gray-50 rounded-lg p-4 text-center">
-                                <h4 class="text-sm font-medium text-gray-700 mb-3">Barcode</h4>
-                                <div class="inline-block bg-white p-4 rounded-lg shadow-sm">
-                                    <svg id="barcode-{{ $document->id }}" class="mx-auto"></svg>
+                            <div class="mt-4 text-center max-w-md">
+                                <p class="text-sm font-medium text-gray-700 mb-2">Scan QR Code untuk mengakses halaman verifikasi ini</p>
+                                <p class="text-xs text-gray-500 mb-3 break-all">
+                                    {{ route('signatures.verify', $document->qr_code_token) }}
+                                </p>
+                                <div class="p-3 bg-blue-50 rounded-lg border border-blue-200">
+                                    <p class="text-xs text-blue-800">
+                                        <strong>Token Verifikasi:</strong> 
+                                        <span class="break-all font-mono">{{ $document->qr_code_token }}</span>
+                                    </p>
                                 </div>
-                                <p class="text-xs text-gray-500 mt-2 break-all">{{ $document->qr_code_token }}</p>
-                                <p class="text-xs text-gray-400 mt-1">Token Verifikasi</p>
                             </div>
-                        </div>
-                        <div class="mt-4 p-3 bg-blue-50 rounded-lg">
-                            <p class="text-xs text-blue-800">
-                                <strong>URL Verifikasi:</strong> 
-                                <span class="break-all">{{ route('signatures.verify', $document->qr_code_token) }}</span>
-                            </p>
                         </div>
                     </div>
 
@@ -136,23 +126,5 @@
         </div>
     </div>
 
-    <script>
-        // Generate Barcode
-        document.addEventListener('DOMContentLoaded', function() {
-            const barcodeElement = document.getElementById('barcode-{{ $document->id }}');
-            if (barcodeElement && typeof JsBarcode !== 'undefined') {
-                JsBarcode(barcodeElement, "{{ $document->qr_code_token }}", {
-                    format: "CODE128",
-                    width: 2,
-                    height: 80,
-                    displayValue: true,
-                    fontSize: 14,
-                    margin: 10,
-                    background: "#ffffff",
-                    lineColor: "#000000"
-                });
-            }
-        });
-    </script>
 </body>
 </html>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Document;
+use App\Models\Signature;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
@@ -14,6 +15,12 @@ class DocumentController extends Controller
     {
         $documents = Document::latest()->paginate(10);
         return view('documents.index', compact('documents'));
+    }
+
+    public function signatures()
+    {
+        $signatures = Signature::with('document')->latest('signed_at')->paginate(15);
+        return view('documents.signatures', compact('signatures'));
     }
 
     public function create()

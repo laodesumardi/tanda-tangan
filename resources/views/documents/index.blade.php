@@ -6,10 +6,18 @@
 <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
     <div class="px-4 py-6 sm:px-0">
         <div class="flex justify-between items-center mb-6">
-            <h1 class="text-3xl font-bold text-gray-900">Daftar Dokumen</h1>
-            <a href="{{ route('documents.create') }}" class="bg-indigo-600 text-white hover:bg-indigo-700 px-4 py-2 rounded-md text-sm font-medium">
-                + Upload Dokumen Baru
-            </a>
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">Daftar Dokumen</h1>
+                <p class="text-sm text-gray-500 mt-1">Total: {{ $documents->total() }} dokumen</p>
+            </div>
+            <div class="flex space-x-3">
+                <a href="{{ route('documents.signatures') }}" class="bg-gray-600 text-white hover:bg-gray-700 px-4 py-2 rounded-md text-sm font-medium">
+                    Lihat Tanda Tangan
+                </a>
+                <a href="{{ route('documents.create') }}" class="bg-indigo-600 text-white hover:bg-indigo-700 px-4 py-2 rounded-md text-sm font-medium">
+                    + Upload Dokumen Baru
+                </a>
+            </div>
         </div>
 
         @if($documents->count() > 0)

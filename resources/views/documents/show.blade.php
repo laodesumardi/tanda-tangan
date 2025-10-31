@@ -88,27 +88,63 @@
 
             @if($document->signatures->count() > 0)
                 <div class="px-6 py-4 border-t border-gray-200">
-                    <h3 class="text-lg font-medium text-gray-900 mb-4">Tanda Tangan</h3>
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-medium text-gray-900">
+                            Tanda Tangan ({{ $document->signatures->count() }})
+                        </h3>
+                        <a href="{{ route('documents.signatures') }}" class="text-sm text-indigo-600 hover:text-indigo-900">
+                            Lihat Semua Tanda Tangan →
+                        </a>
+                    </div>
                     <div class="space-y-4">
                         @foreach($document->signatures as $signature)
-                            <div class="border rounded-lg p-4 bg-gray-50">
+                            <div class="border rounded-lg p-4 bg-gray-50 hover:bg-gray-100 transition">
                                 <div class="flex items-start justify-between">
-                                    <div>
-                                        <p class="font-medium text-gray-900">{{ $signature->signer_name }}</p>
-                                        @if($signature->signer_email)
-                                            <p class="text-sm text-gray-600">{{ $signature->signer_email }}</p>
-                                        @endif
+                                    <div class="flex-1">
+                                        <div class="flex items-center space-x-3 mb-2">
+                                            <div class="flex-shrink-0">
+                                                <div class="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center">
+                                                    <span class="text-indigo-600 font-semibold text-sm">
+                                                        {{ substr($signature->signer_name, 0, 1) }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium text-gray-900">{{ $signature->signer_name }}</p>
+                                                @if($signature->signer_email)
+                                                    <p class="text-sm text-gray-600">{{ $signature->signer_email }}</p>
+                                                @endif
+                                            </div>
+                                        </div>
                                         @if($signature->signer_position)
-                                            <p class="text-sm text-gray-500">{{ $signature->signer_position }}</p>
+                                            <p class="text-sm text-gray-500 mb-1">
+                                                <span class="font-medium">Jabatan:</span> {{ $signature->signer_position }}
+                                            </p>
                                         @endif
-                                        <p class="text-xs text-gray-500 mt-2">Ditandatangani: {{ $signature->signed_at->format('d M Y H:i') }}</p>
+                                        <p class="text-xs text-gray-500">
+                                            <span class="font-medium">Ditandatangani:</span> {{ $signature->signed_at->format('d M Y, H:i:s') }}
+                                        </p>
+                                        @if($signature->ip_address)
+                                            <p class="text-xs text-gray-400 mt-1">IP: {{ $signature->ip_address }}</p>
+                                        @endif
                                     </div>
-                                    <div>
-                                        <img src="{{ $signature->signature_data }}" alt="Signature" class="w-32 h-16 border border-gray-300 rounded">
+                                    <div class="ml-4 text-center">
+                                        <img src="{{ $signature->signature_data }}" alt="Signature" 
+                                             class="w-36 h-20 border-2 border-gray-300 rounded bg-white shadow-sm"
+                                             style="max-width: 144px;">
                                     </div>
                                 </div>
                             </div>
                         @endforeach
+                    </div>
+                </div>
+            @else
+                <div class="px-6 py-4 border-t border-gray-200">
+                    <div class="text-center py-6 bg-gray-50 rounded-lg">
+                        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        <p class="mt-2 text-sm text-gray-500">Belum ada tanda tangan pada dokumen ini</p>
                     </div>
                 </div>
             @endif

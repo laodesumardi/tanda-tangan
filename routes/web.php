@@ -11,6 +11,7 @@ Route::get('/', function () {
 Route::resource('documents', DocumentController::class);
 Route::get('documents/{id}/download', [DocumentController::class, 'download'])->name('documents.download');
 Route::get('documents/{id}/qrcode', [DocumentController::class, 'qrcode'])->name('documents.qrcode');
+Route::get('signatures', [DocumentController::class, 'signatures'])->name('documents.signatures');
 
 Route::get('sign/{token}', [SignatureController::class, 'show'])->name('signatures.show');
 Route::post('sign/{token}', [SignatureController::class, 'store'])->name('signatures.store');

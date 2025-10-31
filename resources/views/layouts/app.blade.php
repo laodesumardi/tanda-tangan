@@ -26,6 +26,7 @@
                 </div>
                 <div class="flex items-center space-x-4">
                     <a href="{{ route('documents.index') }}" class="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">Dokumen</a>
+                    <a href="{{ route('documents.signatures') }}" class="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">Tanda Tangan</a>
                     <a href="{{ route('documents.create') }}" class="bg-indigo-600 text-white hover:bg-indigo-700 px-4 py-2 rounded-md text-sm font-medium">Upload Dokumen</a>
                 </div>
             </div>
